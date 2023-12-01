@@ -2,31 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MyFrame extends JFrame {
-    int width;
-    int height;
-    int blockWidth;
-    int xGap;
-    Point[] pixel;
-
-    public MyFrame(int width, int height, int blockWidth, int xGap ,Point[] pixel) {
-        this.height = height;
-        this.width = width;
-        this.blockWidth =  blockWidth;
-        this.xGap = xGap;
-        this.pixel = pixel;
-
+    public MyFrame(int WIDTH, int HEIGHT) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(new Dimension(width, height));
-        setResizable(false);
-        setLocationRelativeTo(null);
+        setSize(WIDTH,HEIGHT);
+        setTitle("Sorting visualizer");
         setVisible(true);
+        setResizable(false);
+        setLayout(null);
+        getContentPane().setBackground(Color.BLACK);
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        for (int i = 0; i < pixel.length; i++) {
-            g.fillRect((i + 1) * (xGap + blockWidth), pixel[i].y, blockWidth,height - pixel[i].y);
+    public void add(SortingObjects[] sortingObjects) {
+        for (int i = 0; i < sortingObjects.length; i++) {
+            sortingObjects[i].setLocation((i + 1) * (5 + 10), sortingObjects[i].y);
+            this.add(sortingObjects[i]);
         }
     }
 }

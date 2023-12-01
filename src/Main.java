@@ -1,69 +1,116 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.Random;
 
-public class Main extends JFrame{
-    static int ELEMENTS = 65;
-    static MyFrame myFrame;
-    static Point[] pixel;
-
-    private static final int xGap = 5;
-    private static final int yGap = 4;
-    private static final int blockWidth = 10;
-    private static final int myFrameWidth = 1000;
-    private static final int myFrameHeight = 500;
-    private static final int myFrameYOffset = 20;
-    private static final int duration = 40;
+public class Main {
+    static MyFrame sortingVisualizingFrame;
+    static MyFrame menuFrame;
+    static final int ELEMENTS = 64;
+    static final int DURATION = 0;
+    static int arrayAccesses = 0;
+    static int comparisons = 0;
+    static long startTime = 0;
+    static long endTime = 0;
+    static long runtime = 0;
 
     public static void main(String[] args) {
-        pixel = new Point[ELEMENTS];
+        sortingVisualizingFrame = new MyFrame(1000,500);
+        menuFrame = new MyFrame(250,500);
+        sortingVisualizingFrame.setTitle("array accesses: " + arrayAccesses + ", comparisons: " + comparisons + ", elements: " + ELEMENTS + ", sleep time: " + DURATION + ", Runtime: " + runtime + "sec");
 
-        for (int i = 0; i < pixel.length; i++) {
-            pixel[i] = new Point(0, ((myFrameHeight - myFrameYOffset) - i * yGap));
+        SortingObjects[] sortingObjects = new SortingObjects[ELEMENTS];
+        for (int i = 0; i < sortingObjects.length; i++) {
+            sortingObjects[i] = new SortingObjects(0, i * 7, 10, sortingVisualizingFrame.getHeight(), Color.LIGHT_GRAY);
         }
-        pixel = shuffle(pixel);
-        myFrame = new MyFrame(myFrameWidth, myFrameHeight, blockWidth, xGap, pixel);
-        System.out.println(Arrays.toString(pixel));
-        bubbleSort(pixel);
 
-        JButton shuffleButton = new JButton();
-        shuffleButton.setBounds(0,0,100,50);
-        shuffleButton.setText("shuffle");
-        shuffleButton.addActionListener(new AbstractAction() {
+        shuffle(sortingObjects);
+        sortingVisualizingFrame.add(sortingObjects);
+        SwingUtilities.updateComponentTreeUI(sortingVisualizingFrame);
+
+        JButton shuffle = new JButton("shuffle");
+        shuffle.setBounds(5,0,130,50);
+        shuffle.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                pixel = shuffle(pixel);
-                myFrame.repaint();
+                new Thread(() -> shuffle(sortingObjects)).start();
             }
         });
-        myFrame.add(shuffleButton);
-        myFrame.update(myFrame.getGraphics());
+        menuFrame.add(shuffle);
+
+        JButton bubbleSort = new JButton("Bubble Sort");
+        bubbleSort.setBounds(5,60,130,50);
+        bubbleSort.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuFrame.setVisible(false);
+                new Thread(() -> bubbleSort(sortingObjects)).start();
+            }
+        });
+        menuFrame.add(bubbleSort);
     }
 
-    public static void bubbleSort(Point[] pixel) {
-        for (int i = 0; i < pixel.length; i++) {
-            for (int j = 0; j < pixel.length - 1; j++) {
-                if (pixel[j].y > pixel[j + 1].y) {
-                    Point temp = pixel[j + 1];
-                    pixel[j + 1] = pixel[j];
-                    pixel[j] = temp;
-                }
-                try {
-                    Thread.sleep(duration);
-                    myFrame.update(myFrame.getGraphics());
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+    public static void shuffle(SortingObjects[] sortingObjects) {
+        Random rand = new Random();
+        for (int i = sortingObjects.length - 1; i > 0; i--) {
+            int index = rand.nextInt(i + 1);
+
+            SortingObjects temp = sortingObjects[i];
+            sortingObjects[i] = sortingObjects[index];
+            sortingObjects[index] = temp;
+        }
+        sortingVisualizingFrame.add(sortingObjects);
+        arrayAccesses = 0;
+        comparisons = 0;
+        startTime = 0;
+        endTime = 0;
+        runtime = 0;
+    }
+
+    public static void finish(SortingObjects[] sortingObjects) {
+        for (int i = 0; i < sortingObjects.length - 1; i++) {
+            sortingObjects[i].setBackground(Color.DARK_GRAY);
+            sortingObjects[i + 1].setBackground(Color.DARK_GRAY);
+            SwingUtilities.updateComponentTreeUI(sortingVisualizingFrame);
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            sortingObjects[i].setBackground(Color.LIGHT_GRAY);
+            sortingObjects[i + 1].setBackground(Color.LIGHT_GRAY);
+        }
+        menuFrame.setVisible(true);
+    }
+
+    public static void bubbleSort(SortingObjects[] sortingObjects) {
+        startTime = System.currentTimeMillis();
+        for (int i = 0; i < sortingObjects.length; i++) {
+            for (int j = 0; j < sortingObjects.length - 1; j++) {
+                if (sortingObjects[j].y < sortingObjects[j + 1].y) {
+                    comparisons++;
+                    arrayAccesses += 3;
+
+                    sortingObjects[j].setBackground(Color.BLUE);
+                    sortingObjects[j + 1].setBackground(Color.GREEN);
+
+                    SortingObjects temp = sortingObjects[j + 1];
+                    sortingObjects[j + 1] = sortingObjects[j];
+                    sortingObjects[j] = temp;
+
+                    sortingVisualizingFrame.add(sortingObjects);
+                    sortingVisualizingFrame.setTitle("array accesses: " + arrayAccesses + ", comparisons: " + comparisons + ", elements: " + ELEMENTS + ", sleep time: " + DURATION + ", Runtime: " + runtime + "sec");
+                    SwingUtilities.updateComponentTreeUI(sortingVisualizingFrame);
+
+                    sortingObjects[j].setBackground(Color.LIGHT_GRAY);
+                    sortingObjects[j + 1].setBackground(Color.LIGHT_GRAY);
                 }
             }
         }
-    }
+        endTime = System.currentTimeMillis();
 
-    public static Point[] shuffle(Point[] pixel) {
-        List<Point> pixelList = Arrays.asList(pixel);
-        Collections.shuffle(pixelList);
-        return pixelList.toArray(pixel);
+        runtime = (endTime - startTime) / 1000;
+        sortingVisualizingFrame.setTitle("array accesses: " + arrayAccesses + ", comparisons: " + comparisons + ", elements: " + ELEMENTS + ", sleep time: " + DURATION + ", Runtime: " + runtime + "sec");
+        finish(sortingObjects);
     }
 }
