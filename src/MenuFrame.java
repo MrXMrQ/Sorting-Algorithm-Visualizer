@@ -18,7 +18,6 @@ public class MenuFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                Main.shuffle = true;
                 new Thread(() -> Main.shuffle(sortingObjects)).start();
             }
         });
@@ -30,7 +29,7 @@ public class MenuFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                Main.shuffle = false;
+                Main.sort = "Bubble";
                 new Thread(() -> Main.bubbleSort(sortingObjects)).start();
             }
         });
@@ -42,10 +41,48 @@ public class MenuFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                Main.shuffle = false;
-                new Thread(() -> Main.selectionSort(sortingObjects)).start();
+                Main.sort = "Insertion";
+                Main.selectionSort(sortingObjects);
+
             }
         });
         add(selectionSortButton);
+
+        JButton mergeSortButton = new JButton("Merge sort");
+        mergeSortButton.setBounds(0, selectionSortButton.getY() + 60, getWidth(), 50);
+        mergeSortButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                Main.sort = "Insertion";
+                new Thread(() -> Main.mergeSort(sortingObjects, sortingObjects.length)).start();
+                System.out.println("s");
+            }
+        });
+        add(mergeSortButton);
+
+        JButton quickSortButton = new JButton("Quick sort");
+        quickSortButton.setBounds(0, mergeSortButton.getY() + 60, getWidth(), 50);
+        quickSortButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                Main.sort = "Insertion";
+                new Thread(() -> Main.quickSort(sortingObjects)).start();
+            }
+        });
+        add(quickSortButton);
+
+        JButton insertionSortButton = new JButton("Insertion sort");
+        insertionSortButton.setBounds(0, quickSortButton.getY() + 60, getWidth(), 50);
+        insertionSortButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                Main.sort = "Insertion";
+                new Thread(() -> Main.insertionSort(sortingObjects)).start();
+            }
+        });
+        add(insertionSortButton);
     }
 }
