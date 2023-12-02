@@ -12,9 +12,9 @@ public class MyFrame extends JFrame {
         getContentPane().setBackground(Color.BLACK);
     }
 
-    public void add(SortingObjects[] sortingObjects) {
+    public void add(SortingObjects[] sortingObjects, int OBJECTXGAP, int OBJECTWIDTH) {
         for (int i = 0; i < sortingObjects.length; i++) {
-            sortingObjects[i].setLocation((i + 1) * (5 + 10), sortingObjects[i].y);
+            sortingObjects[i].setLocation((i + 1) * (OBJECTXGAP + OBJECTWIDTH), sortingObjects[i].y);
             this.add(sortingObjects[i]);
         }
     }
