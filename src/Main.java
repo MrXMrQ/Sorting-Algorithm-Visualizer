@@ -32,7 +32,7 @@ public class Main {
         new Thread(() -> fill(sortingObjects)).start();
 
         menuFrame = new MenuFrame(250, 500, sortingObjects);
-        menuFrame.setVisible(false);
+        menuFrame.setVisible(true);
     }
 
     public static void fill(SortingObjects[] sortingObjects) {
