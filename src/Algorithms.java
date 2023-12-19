@@ -7,7 +7,7 @@ public class Algorithms {
     private long endTime;
     private int arrayAccesses = 0;
     private int comparisons = 0;
-    private final int DURATION = 0;
+    private final int DURATION = 150;
 
     public void bubbleSort(SortingObjects[] sortingObjects) {
         sort = "Bubble";
@@ -51,7 +51,7 @@ public class Algorithms {
         sortingObjects[i] = sortingObjects[index];
         sortingObjects[index] = temp;
 
-        update(sortingObjects, Main.OBJECTXGAP, Main.OBJECTWIDTH);
+        update(sortingObjects);
 
         try {
             Thread.sleep(DURATION);
@@ -64,7 +64,8 @@ public class Algorithms {
     }
 
     private void finish(SortingObjects[] sortingObjects) {
-        runtime = (endTime - startTime);
+        runtime = endTime - startTime;
+        update(sortingObjects);
         int initialAnimationDuration = (int) (1000.0 * Math.exp(-0.2 * sortingObjects.length) + 100.0);
 
         for (int i = 0; i < sortingObjects.length - 1; i++) {
@@ -82,16 +83,12 @@ public class Algorithms {
             sortingObjects[i].setBackground(Color.LIGHT_GRAY);
             sortingObjects[i + 1].setBackground(Color.LIGHT_GRAY);
         }
-        runtime = 0;
-        startTime = 0;
-        endTime = 0;
-        arrayAccesses = 0;
-        comparisons = 0;
+        runtime = startTime = endTime = arrayAccesses = comparisons = 0;
         Main.menuFrame.setVisible(true);
     }
 
-    private void update(SortingObjects[] sortingObjects, int OBJECTXGAP, int OBJECTWIDTH) {
-        Main.sortingVisualizingFrame.add(sortingObjects, OBJECTXGAP, OBJECTWIDTH);
+    private void update(SortingObjects[] sortingObjects) {
+        Main.sortingVisualizingFrame.add(sortingObjects, Main.OBJECTXGAP, Main.OBJECTWIDTH);
         Main.sortingVisualizingFrame.setTitle(sort + " sort" + " | array accesses: " + arrayAccesses + " | comparisons: " + comparisons + " | elements: " + sortingObjects.length + " | delay: " + DURATION + " | runtime: " + runtime + "ms");
     }
 }

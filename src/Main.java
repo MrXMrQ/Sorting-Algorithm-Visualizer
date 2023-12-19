@@ -28,7 +28,6 @@ public class Main {
             sortingObjects[i] = new SortingObjects(0, i * OBJECTYGAP, OBJECTWIDTH, sortingVisualizingFrame.getHeight(), Color.LIGHT_GRAY);
         }
 
-
         shuffle(sortingObjects);
         sortingVisualizingFrame.add(sortingObjects, OBJECTXGAP, OBJECTWIDTH);
         SwingUtilities.updateComponentTreeUI(sortingVisualizingFrame);
