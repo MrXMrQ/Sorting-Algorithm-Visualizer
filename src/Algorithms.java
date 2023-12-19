@@ -2,19 +2,15 @@ import java.awt.*;
 
 public class Algorithms {
     private String sort;
-    private long runtime;
-    private long startTime;
-    private long endTime;
-    private int arrayAccesses = 0;
-    private int comparisons = 0;
-    private final int DURATION = 150;
+    private long runtime, startTime, endTime;
+    private int arrayAccesses, comparisons = 0;
+    private final int DURATION = 0;
 
     public void bubbleSort(SortingObjects[] sortingObjects) {
         sort = "Bubble";
         startTime = System.currentTimeMillis();
         for (int i = 0; i < sortingObjects.length; i++) {
             for (int j = 0; j < sortingObjects.length - 1; j++) {
-                System.out.println("i: " + i + ", j: " + j);
                 if (sortingObjects[j].y < sortingObjects[j + 1].y) {
                     comparisons++;
                     swapElements(sortingObjects, j + 1, j);
@@ -42,14 +38,14 @@ public class Algorithms {
         finish(sortingObjects);
     }
 
-    private void swapElements(SortingObjects[] sortingObjects, int index, int i) {
+    private void swapElements(SortingObjects[] sortingObjects, int swapElement, int baseElement) {
         arrayAccesses += 3;
-        sortingObjects[i].setBackground(Color.BLUE);
-        sortingObjects[index].setBackground(Color.GREEN);
+        sortingObjects[swapElement].setBackground(Color.BLUE);
+        sortingObjects[baseElement].setBackground(Color.GREEN);
 
-        SortingObjects temp = sortingObjects[i];
-        sortingObjects[i] = sortingObjects[index];
-        sortingObjects[index] = temp;
+        SortingObjects temp = sortingObjects[baseElement];
+        sortingObjects[baseElement] = sortingObjects[swapElement];
+        sortingObjects[swapElement] = temp;
 
         update(sortingObjects);
 
@@ -59,8 +55,8 @@ public class Algorithms {
             throw new RuntimeException(e);
         }
 
-        sortingObjects[i].setBackground(Color.LIGHT_GRAY);
-        sortingObjects[index].setBackground(Color.LIGHT_GRAY);
+        sortingObjects[swapElement].setBackground(Color.LIGHT_GRAY);
+        sortingObjects[baseElement].setBackground(Color.LIGHT_GRAY);
     }
 
     private void finish(SortingObjects[] sortingObjects) {
@@ -84,7 +80,7 @@ public class Algorithms {
             sortingObjects[i + 1].setBackground(Color.LIGHT_GRAY);
         }
         runtime = startTime = endTime = arrayAccesses = comparisons = 0;
-        Main.menuFrame.setVisible(true);
+        MyFrame.buttonPanel.setVisible(true);
     }
 
     private void update(SortingObjects[] sortingObjects) {
